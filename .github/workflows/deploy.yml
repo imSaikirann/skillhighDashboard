@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.6.1'  # Set Node.js version to 20.6.1
+          node-version: '20.6.1'
 
       - name: Install dependencies
         run: npm install
@@ -27,14 +27,12 @@ jobs:
       - name: Build the project
         run: npm run build
 
-      - name: Install Bunny CLI using npm
+      - name: Upload to Bunny.net using API
         run: |
-          npm install -g bunny-cli  # Install Bunny CLI globally
-          bunny-cli --version        # Verify Bunny CLI installation
-
-      - name: Deploy to Bunny.net
-        run: |
-          bunny-cli push ./dist --zone ${{ secrets.BUNNY_ZONE_NAME }} --path /user-dashboard  # Push to Bunny.net
+          # Assuming you have your API Key and Zone Name in secrets
+          curl -X PUT "https://storage.bunnycdn.com/${{ secrets.BUNNY_ZONE_NAME }}/user-dashboard/*" \
+            -H "Authorization: Bearer ${{ secrets.BUNNY_ACCESS_KEY }}" \
+            --data-binary @./dist/*  # Upload all the files from ./dist directory
         env:
           BUNNY_ACCESS_KEY: ${{ secrets.BUNNY_ACCESS_KEY }}
           BUNNY_ZONE_NAME: ${{ secrets.BUNNY_ZONE_NAME }}
