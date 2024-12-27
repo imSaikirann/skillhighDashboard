@@ -27,12 +27,10 @@ jobs:
       - name: Build the project
         run: npm run build
 
-      - name: Install Bunny CLI
+      - name: Install Bunny CLI using npm
         run: |
-          curl -sL https://cdn.bunny.net/setup/cli | bash
-          # Verify installation
-          which bunny-cli
-          bunny-cli --version
+          npm install -g bunny-cli  # Install Bunny CLI globally
+          bunny-cli --version        # Verify Bunny CLI installation
 
       - name: Deploy to Bunny.net
         run: |
