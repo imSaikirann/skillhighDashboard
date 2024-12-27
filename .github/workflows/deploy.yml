@@ -1,0 +1,36 @@
+name: Deploy React Vite App to Bunny.net
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Deploy to Bunny.net
+        run: |
+          curl -sL https://cdn.bunny.net/setup/cli | bash
+          bunny-cli login --access-key ${{ secrets.BUNNY_ACCESS_KEY }}
+          bunny-cli push ./dist --zone <your-zone-name> --path /user-dashboard
+        env:
+          BUNNY_ACCESS_KEY: ${{ secrets.BUNNY_ACCESS_KEY }}
