@@ -34,7 +34,6 @@ jobs:
 
       - name: Deploy to Bunny.net
         run: |
-          bunny-cli login --access-key ${{ secrets.BUNNY_ACCESS_KEY }}  # Login with Bunny Access Key
           bunny-cli push ./dist --zone ${{ secrets.BUNNY_ZONE_NAME }} --path /user-dashboard  # Push to Bunny.net
         env:
           BUNNY_ACCESS_KEY: ${{ secrets.BUNNY_ACCESS_KEY }}
