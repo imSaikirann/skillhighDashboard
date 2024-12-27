@@ -29,8 +29,10 @@ jobs:
 
       - name: Install Bunny CLI
         run: |
-          curl -sL https://cdn.bunny.net/setup/cli | bash  # This installs Bunny CLI globally
-          echo "Bunny CLI installed successfully."
+          curl -sL https://cdn.bunny.net/setup/cli | bash
+          # Verify installation
+          which bunny-cli
+          bunny-cli --version
 
       - name: Deploy to Bunny.net
         run: |
