@@ -28,18 +28,16 @@ jobs:
         run: npm run build
 
       - name: List build directory contents
-        run: ls ./dist  # Verify files exist
+        run: ls -R ./dist  # List all files in dist directory recursively
 
       - name: Upload files to Bunny.net using API
         run: |
           # Loop through all files in the dist directory and upload each one
-          for file in ./dist/*; do
-            if [ -f "$file" ]; then
-              echo "Uploading $file"
-              curl -X PUT "https://sg.storage.bunnycdn.com/${{ secrets.BUNNY_ZONE_NAME }}/user-dashboard/$(basename $file)" \
-                -H "AccessKey: ${{ secrets.BUNNY_ACCESS_KEY }}" \
-                --data-binary @"$file"  # Upload the current file
-            fi
+          find ./dist -type f | while read file; do
+            echo "Uploading $file"
+            curl -X PUT "https://sg.storage.bunnycdn.com/${{ secrets.BUNNY_ZONE_NAME }}/user-dashboard/$(basename $file)" \
+              -H "AccessKey: ${{ secrets.BUNNY_ACCESS_KEY }}" \
+              --data-binary @"$file"  # Upload the current file
           done
         env:
           BUNNY_ACCESS_KEY: ${{ secrets.BUNNY_ACCESS_KEY }}
