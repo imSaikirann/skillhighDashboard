@@ -27,12 +27,14 @@ jobs:
       - name: Build the project
         run: npm run build
 
-      - name: Upload to Bunny.net using API
+      - name: Upload files to Bunny.net
         run: |
-          # Assuming you have your API Key and Zone Name in secrets
-          curl -X PUT "https://sg.storage.bunnycdn.com/${{ secrets.BUNNY_ZONE_NAME }}/user-dashboard/*" \
-            -H "Authorization: Bearer ${{ secrets.BUNNY_ACCESS_KEY }}" \
-            --data-binary @./dist/*  # Upload all the files from ./dist directory
+          # Loop through all files in the dist folder and upload them
+          for file in ./dist/*; do
+            curl -X PUT "https://sg.storage.bunnycdn.com/${{ secrets.BUNNY_ZONE_NAME }}/user-dashboard/$(basename $file)" \
+              -H "Authorization: Bearer ${{ secrets.BUNNY_ACCESS_KEY }}" \
+              --data-binary @$file
+          done
         env:
           BUNNY_ACCESS_KEY: ${{ secrets.BUNNY_ACCESS_KEY }}
           BUNNY_ZONE_NAME: ${{ secrets.BUNNY_ZONE_NAME }}
