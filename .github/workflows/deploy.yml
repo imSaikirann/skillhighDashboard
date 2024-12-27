@@ -27,11 +27,15 @@ jobs:
       - name: Build the project
         run: npm run build
 
+      - name: Install Bunny CLI
+        run: |
+          curl -sL https://cdn.bunny.net/setup/cli | bash  # This installs Bunny CLI globally
+          echo "Bunny CLI installed successfully."
+
       - name: Deploy to Bunny.net
         run: |
-          curl -sL https://cdn.bunny.net/setup/cli | bash
-          bunny-cli login --access-key ${{ secrets.BUNNY_ACCESS_KEY }}
-          bunny-cli push ./dist --zone ${{ secrets.BUNNY_ZONE_NAME }} --path /user-dashboard
+          bunny-cli login --access-key ${{ secrets.BUNNY_ACCESS_KEY }}  # Login with Bunny Access Key
+          bunny-cli push ./dist --zone ${{ secrets.BUNNY_ZONE_NAME }} --path /user-dashboard  # Push to Bunny.net
         env:
           BUNNY_ACCESS_KEY: ${{ secrets.BUNNY_ACCESS_KEY }}
           BUNNY_ZONE_NAME: ${{ secrets.BUNNY_ZONE_NAME }}
