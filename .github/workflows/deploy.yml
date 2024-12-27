@@ -19,18 +19,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '17'  # Ensure using Node.js 17 or later
+          node-version: '20.6.1'  # Set Node.js version to 20.6.1
 
       - name: Install dependencies
         run: npm install
 
-      - name: Fix fs/promises import issue
-        run: |
-          # Ensure the fs import is fixed in your code
-          sed -i 's/import fsp, { constants } from "node:fs\/promises"/import fsp from "node:fs\/promises"/g' src/**/*.js
-          sed -i 's/import { constants } from "node:fs\/promises"/import { constants } from "node:fs"/g' src/**/*.js
-
-      - name: Build the project 
+      - name: Build the project
         run: npm run build
 
       - name: Deploy to Bunny.net
