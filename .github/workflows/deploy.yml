@@ -28,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: List build directory contents
-        run: ls ./dist  # Check if the files are present
+        run: ls ./dist  # Verify files exist
 
       - name: Upload files to Bunny.net using API
         run: |
