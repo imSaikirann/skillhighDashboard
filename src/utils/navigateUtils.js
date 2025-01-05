@@ -15,5 +15,58 @@ export const useNavigateToLogin = () => {
 
 export const useNavigateToPlay = () => {
   const navigate = useNavigate();
-  return () => navigate('/play'); // Redirect to Play
+
+  return (courseId) => {
+    if (courseId) {
+      navigate('/play', { state: { courseId } }); 
+    } else {
+      navigate("/login")
+    }
+  };
+};
+
+
+
+export const useNavigateToProjects = () => {
+  const navigate = useNavigate();
+
+  return (courseId,courseName) => {
+
+    if (!courseId || !courseName) {
+      console.warn('Invalid courseId:', courseId); // Log invalid courseId for debugging
+      navigate('/'); 
+      return;
+    }
+
+ 
+    navigate('/projects', { state: { courseId,courseName } });
+  };
+};
+
+
+export const useNavigateToQuizList = () => {
+  const navigate = useNavigate();
+
+  return (courseId,courseName) => {
+
+    if (!courseId || !courseName) {
+      navigate('/'); 
+      return;
+    }
+    navigate('/quiz_list', { state: { courseId,courseName } });
+  };
+};
+
+
+
+export const useNavigateToQuiz = () => {
+  const navigate = useNavigate();
+
+  return (quizId) => {
+    if (!quizId) {
+      navigate('/'); 
+      return;
+    }
+    navigate('/quiz', { state: { quizId,} });
+  };
 };

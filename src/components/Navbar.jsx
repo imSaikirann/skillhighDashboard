@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import newLogo from '../assets/newLogo.png';
 import { Profile } from '../assets/icons/icons';
 import { useData } from '../store/DataContext';
-import {useNavigateToLogin} from '../utils/navigateUtils'
+import { useNavigateToLogin } from '../utils/navigateUtils'
+import { ProfileInMenu, Settings, Logout, Resume } from '../assets/icons/icons'
+
+
 export default function Navbar() {
- const {profileData} = useData()
+  const { profileData } = useData()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(localStorage.getItem('theme') === 'dark');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -74,14 +77,10 @@ export default function Navbar() {
   const handleLogout = () => {
     // Remove items from localStorage using string keys
     localStorage.removeItem("token"); // Assuming 'token' is the key for your auth token
-    localStorage.removeItem("appData"); // Assuming 'appData' is the key for app-related data
-  
-   
-  
-      redirectToLogin(); // If redirectToLogin is a defined function
-   
+    redirectToLogin(); // If redirectToLogin is a defined function
+
   };
-  
+
 
   const renderProfileMenu = () => (
     <div className="absolute right-0 mt-2 w-auto bg-white dark:bg-dark dark:border-2 dark:border-dark rounded-lg shadow-lg">
@@ -94,25 +93,29 @@ export default function Navbar() {
         </span>
       </div>
       <ul className="py-2">
-        <li>
-          <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200">
+        <li onClick={() => setProfileMenuOpen(false)} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+          <ProfileInMenu className="mr-2" />
+          <Link to="/profile" className="flex-grow">
             Profile
           </Link>
         </li>
-        <li>
-          <Link to="/resume" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200">
+        {/* <li className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+          <Resume className="mr-2" />
+          <Link to="/resume" className="flex-grow">
             Resume
           </Link>
-        </li>
-        <li>
-          <Link to="/earnings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200">
+        </li> */}
+        <li onClick={() => setProfileMenuOpen(false)} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+          <Settings className="mr-2" />
+          <Link to="/earnings" className="flex-grow">
             Settings
           </Link>
         </li>
-        <li>
+        <li onClick={() => setProfileMenuOpen(false)} className="flex items-center px-4 py-2 text-sm text-gray-700  dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+          <Logout className="mr-2" />
           <button
             onClick={() => handleLogout()} // Replace with actual logout logic
-            className="text-left block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200"
+            className="text-left flex-grow"
           >
             Sign Out
           </button>
@@ -120,6 +123,7 @@ export default function Navbar() {
       </ul>
     </div>
   );
+
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-darkBg fixed w-full top-0 left-0 z-50 shadow-md">
@@ -153,13 +157,13 @@ export default function Navbar() {
             </button>
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark shadow-md rounded-lg p-2" role="menu" aria-orientation="vertical">
-                <button className="w-full py-2 px-3 text-sm text-left text-gray-800 dark:text-neutral-400 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg" onClick={() => handleThemeChange('light')}>
+                <button className="w-full py-2 px-3 text-sm text-left text-gray-800 dark:text-neutral-400 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg" onClick={() => handleThemeChange('light')}>
                   Default (Light)
                 </button>
-                <button className="w-full py-2 px-3 text-sm text-left text-gray-800 dark:text-neutral-400 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg" onClick={() => handleThemeChange('dark')}>
+                <button className="w-full py-2 px-3 text-sm text-left text-gray-800 dark:text-neutral-400 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg" onClick={() => handleThemeChange('dark')}>
                   Dark
                 </button>
-                <button className="w-full py-2 px-3 text-sm text-left text-gray-800 dark:text-neutral-400 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg" onClick={() => handleThemeChange('auto')}>
+                <button className="w-full py-2 px-3 text-sm text-left text-gray-800 dark:text-neutral-400 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg" onClick={() => handleThemeChange('auto')}>
                   Auto (System)
                 </button>
               </div>

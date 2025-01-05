@@ -1,55 +1,68 @@
-import React, { useState } from 'react';
-
-const quizQuestions = [
-  {
-    question: "What is the capital of France?",
-    options: ["Paris", "London", "Berlin", "Madrid"],
-    correctAnswer: "Paris",
-  },
-  {
-    question: "What is 2 + 2?",
-    options: ["3", "4", "5", "6"],
-    correctAnswer: "4",
-  },
-  {
-    question: "Which language is used to build React?",
-    options: ["Java", "C++", "JavaScript", "Python"],
-    correctAnswer: "JavaScript",
-  },
-  {
-    question: "What is the largest ocean on Earth?",
-    options: ["Atlantic", "Indian", "Arctic", "Pacific"],
-    correctAnswer: "Pacific",
-  },
-];
+import React, { useState, useEffect, useRef } from 'react';
+import { useData } from '../store/DataContext';
+import { useLocation } from 'react-router-dom';
 
 export const QuizComponent = () => {
+  const { fetchQuizById, quiz, loading, submitQuizResult } = useData();
+  const location = useLocation();
+  const { quizId } = location.state || {};
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  
+  // Using useRef to store answers to avoid re-renders
+  const answersRef = useRef([]);
+
+  useEffect(() => {
+    fetchQuizById(quizId);
+  }, [quizId]);
+
+  // Ensure quiz.questions is available before rendering
+  if (!quiz || !quiz.questions) {
+    return (
+      <div>Loading...</div>
+    );
+  }
 
   // Handle selecting an option
   const handleOptionSelect = (option) => {
-    setSelectedOption(option);
+    setSelectedOption(option.text);
   };
 
   // Handle submitting the answer
-  const handleSubmitAnswer = () => {
-    if (selectedOption === quizQuestions[currentQuestionIndex].correctAnswer) {
+  const handleSubmitAnswer = async () => {
+    const currentQuestion = quiz.questions[currentQuestionIndex];
+    const selectedAnswer = currentQuestion.answers.find(answer => answer.text === selectedOption);
+
+    // Create answer object in the desired format
+    const answerData = {
+      questionId: currentQuestion.id,
+      answerId: selectedAnswer?.id,
+    };
+
+    // Append the new answer to the answersRef array
+    answersRef.current.push(answerData);
+
+    // Check if selected option is correct
+    if (selectedOption === currentQuestion.answers.find(answer => answer.isCorrect)?.text) {
       setCorrectAnswers(correctAnswers + 1);
     }
 
-    if (currentQuestionIndex < quizQuestions.length - 1) {
+    // Move to next question or finish quiz
+    if (currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption("");
+      setSelectedOption(""); // Reset selected option
     } else {
+      // Log the answers to see what has been collected
+      console.log(answersRef.current); // Now you will see the correct answers here
+      await submitQuizResult(quizId, answersRef.current); // Submit the answers in the correct format
       setQuizCompleted(true);
     }
   };
 
   // Calculate progress
-  const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+  const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
 
   return (
     <div className="flex justify-center items-center min-h-screen font-poppins mt-20">
@@ -63,7 +76,7 @@ export const QuizComponent = () => {
             {/* Progress Bar */}
             <div className="mb-6">
               <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                Question {currentQuestionIndex + 1} of {quizQuestions.length}
+                Question {currentQuestionIndex + 1} of {quiz.questions.length}
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full">
                 <div
@@ -76,23 +89,23 @@ export const QuizComponent = () => {
             {/* Question */}
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-darkBg dark:text-gray-200">
-                {quizQuestions[currentQuestionIndex].question}
+                {quiz.questions[currentQuestionIndex].text}
               </h3>
             </div>
 
             {/* Options */}
             <div className="space-y-4">
-              {quizQuestions[currentQuestionIndex].options.map((option, index) => (
+              {quiz.questions[currentQuestionIndex].answers.map((option, index) => (
                 <button
                   key={index}
                   onClick={() => handleOptionSelect(option)}
                   className={`w-full py-3 text-left rounded-lg border pl-4 border-transparent transition-all duration-200 ${
-                    selectedOption === option
-                      ? "bg-main text-white"
+                    selectedOption === option.text
+                      ? "bg-white text-primary "
                       : "bg-gray-100 dark:bg-gray-700 text-darkBg dark:text-gray-200"
-                  } hover:bg-main focus:outline-none focus:ring-2 focus:ring-main focus:ring-offset-2`}
+                  } hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
                 >
-                  {option}
+                  {option.text}
                 </button>
               ))}
             </div>
@@ -102,11 +115,13 @@ export const QuizComponent = () => {
               <button
                 onClick={handleSubmitAnswer}
                 disabled={!selectedOption}
-                className={`w-full py-3 bg-main text-white bg-primary font-semibold rounded-lg shadow-md hover:bg-main focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full py-3 bg-primary text-white font-semibold rounded-lg shadow-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   !selectedOption ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                {currentQuestionIndex === quizQuestions.length - 1 ? "Finish Quiz" : "Next Question"}
+                {currentQuestionIndex === quiz.questions.length - 1
+                  ? "Finish Quiz"
+                  : "Next Question"}
               </button>
             </div>
           </>
@@ -116,12 +131,12 @@ export const QuizComponent = () => {
               Quiz Completed!
             </h3>
             <p className="text-lg text-gray-600 dark:text-gray-400">
-              You answered {correctAnswers} out of {quizQuestions.length} questions correctly.
+              You answered {correctAnswers} out of {quiz.questions.length} questions correctly.
             </p>
             <div className="mt-4">
               <button
                 onClick={() => window.location.reload()}
-                className="py-3 px-6 bg-main text-white font-semibold rounded-lg hover:bg-main focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="py-3 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Try Again
               </button>

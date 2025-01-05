@@ -1,113 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../store/DataContext';
-import axios from '../config/axiosConfig';
+import { PlayIcon } from '../assets/icons/icons';
 
 export default function Sidebar() {
-  const { courseTopicsData, setTopicData, data } = useData();  // Ensure setTopicData is available in your context
-  const [checkedLessons, setCheckedLessons] = useState(
-    Array(courseTopicsData.length).fill(false)
-  );
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  
-  // Handle checkbox state change
-  const handleCheckboxChange = async (index, topicId) => {
-    const newCheckedLessons = [...checkedLessons];
-    const newChecked = !newCheckedLessons[index];
-    newCheckedLessons[index] = newChecked;
-    setCheckedLessons(newCheckedLessons);
+  const { courseTopicsData, setTopicData } = useData();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [checkedLessons, setCheckedLessons] = useState([]);
 
-    // Call updateCheckbox API to update completion status
-    await updateCheckbox(data, topicId, newChecked);  // data is courseId, topicId is passed
-  };
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const handleTopic = (topic) => {
-    setTopicData(topic);
-  };
-
-  const updateCheckbox = async (courseId, topicId, completed) => {
-    try {
-      const response = await axios.post('/dashboardUsers/updateProgress', {
-        courseId,
-        topicId,
-        completed,
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
-    // Initialize the checkbox states based on `topicCheckbox.completed` field
     if (courseTopicsData.length > 0) {
-      const initialCheckedLessons = courseTopicsData.map((topic) =>
-        topic.topicCheckbox.length > 0 ? topic.topicCheckbox[0].completed : false // Assuming each topic has one entry in topicCheckbox
+      const initialChecked = courseTopicsData.map(topic =>
+        topic.topicCheckbox.length > 0 ? topic.topicCheckbox[0].completed : false
       );
-      setCheckedLessons(initialCheckedLessons);
+      setCheckedLessons(initialChecked);
+      setTopicData(courseTopicsData[0]);
     }
-  }, [courseTopicsData]);
+  }, [courseTopicsData, setTopicData]);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const handleCheckboxChange = (index, topicId) => {
+    const updatedChecked = [...checkedLessons];
+    updatedChecked[index] = !updatedChecked[index];
+    setCheckedLessons(updatedChecked);
+  };
+
+ 
 
   return (
-    <div>
-      {/* Mobile Sidebar Toggle Button */}
+    <>
+      {/* Sidebar Toggle Button for Mobile */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden text-white bg-primary p-3 rounded-full fixed top-4 left-4 z-50"
+        className={`lg:hidden fixed top-24 ${
+          isSidebarOpen ? 'left-72' : 'left-4'
+        } bg-primary text-white rounded-full p-3 z-50 transition-all`}
       >
-        <span className="text-lg">☰</span>
+        {isSidebarOpen ? 'Close' : 'Open Contents'}
       </button>
 
-      {/* Sidebar - For Large Screens */}
+      {/* Sidebar */}
       <div
-        className={`bg-white dark:bg-darkBg text-black dark:text-white p-6 fixed lg:relative lg:w-80 transition-all duration-300 ease-in-out h-full ${
-          isSidebarOpen ? 'w-64' : 'w-0 lg:w-80'
-        } shadow-lg rounded-r-lg`}
+        className={`fixed top-0 left-0 lg:relative bg-white dark:bg-dark text-gray-900 dark:text-white transition-transform transform ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 h-full w-64 lg:w-full shadow-lg z-40 mt-20`}
       >
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-white">
-          Course Lessons
-        </h2>
-
-        {/* List of Lessons - Scrollable */}
-        <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-150px)]">
-          {courseTopicsData && courseTopicsData.length > 0 ? (
-            courseTopicsData.map((topic, index) => (
-              <div
-                key={topic.id}
-                className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+        <h2 className="text-xl font-semibold p-4">Course Lessons</h2>
+        <div className="overflow-y-auto max-h-[calc(100vh-4rem)] px-4">
+          {courseTopicsData.map((topic, index) => (
+            <div key={topic.id} className="flex items-center space-x-2 py-2">
+              <input
+                type="checkbox"
+                checked={checkedLessons[index] || false}
+                onChange={() => handleCheckboxChange(index, topic.id)}
+                className="h-5 w-5"
+              />
+              <button
+                onClick={() => setTopicData(topic)}
+                className="text-sm font-medium text-primary dark:text-gray-300"
               >
-                {/* Checkbox */}
-                <input
-                  type="checkbox"
-                  checked={checkedLessons[index]}
-                  onChange={() => handleCheckboxChange(index, topic.id)} // Pass topic.id to update the correct topic
-                  className="h-5 w-5 text-primary dark:bg-gray-700 dark:border-gray-600 rounded-sm"
-                />
-                {/* Lesson Button */}
-                <button
-                  onClick={() => handleTopic(topic)} // Send the whole topic to setTopicData
-                  className="flex-1 text-left bg-primary text-white py-2 px-4 rounded-md hover:bg-primaryDark transition-colors"
-                >
-                  {topic.title}
-                </button>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-600 dark:text-gray-400">No lessons available.</p>
-          )}
+                <PlayIcon className="inline-block mr-2" />
+                {topic.title}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Overlay for Mobile Sidebar */}
+      {/* Overlay for Sidebar on Mobile */}
       {isSidebarOpen && (
         <div
           onClick={toggleSidebar}
-          className="fixed top-0 left-0 w-full h-full bg-black opacity-50 lg:hidden"
+          className="fixed inset-0 bg-black opacity-50 lg:hidden z-30"
         ></div>
       )}
-    </div>
+    </>
   );
 }

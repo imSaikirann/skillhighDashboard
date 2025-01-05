@@ -6,11 +6,6 @@ const DataContext = createContext();
 
 // Create a Provider Component
 export const DataProvider = ({ children }) => {
-  const [data, setData] = useState(() => {
-    // Load initial data from Local Storage
-    const savedData = localStorage.getItem('appData');
-    return savedData ? JSON.parse(savedData) : {};
-  });
   const [icon, setIcon] = useState(false);
   const [alert, setAlert] = useState({ message: '', isVisible: false });
   const [loading, setLoading] = useState(false);
@@ -19,53 +14,61 @@ export const DataProvider = ({ children }) => {
   const [courseTopicsData, setCourseTopicsData] = useState([]);
   const [TopicsData, setTopicData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projects, setprojects] = useState([]);
+  const [quiz, setQuiz] = useState([]);
 
 
 
-  // Persist data to Local Storage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('appData', JSON.stringify(data));
-  }, [data]);
-
-//get user profiledata
- // Fetch user data
- const fetchUserData = async () => {
-  setLoading(true);
-  try {
-    const response = await axios.get("/dashboardUsers/profile");
-    setProfileData(response.data);
-  } catch (error) {
-    console.error("Error fetching profile data:", error);
-  } finally {
-    setLoading(false);
-  }
-};
-
-// Modal check when profileData changes
-useEffect(() => {
-  let timer; // Declare a timer reference
-
-  if (profileData && profileData.userName) {
-    setIsModalOpen(false);
-  } else {
-    timer = setTimeout(() => {
-      setIsModalOpen(true);
-    }, 1000);
-  }
-
-  // Cleanup the timer on unmount or dependency change
-  return () => {
-    if (timer) {
-      clearTimeout(timer);
+  //get user profiledata
+  const fetchUserData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/dashboardUsers/profile");
+      setProfileData(response.data);
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    } finally {
+      setLoading(false);
     }
   };
-}, [profileData]);
+
+  // //get user profiledata
+  // const fetchProjects = async (courseId) => {
+
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get(`/courseProjects/getProjectByCourseID/${courseId}`);
+  //     setProfileData(response.data);
+  //     console.log(response)
+  //   } catch (error) {
+  //     console.error("Error fetching profile data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // Modal check when profileData changes
+  useEffect(() => {
+    if (loading) {
+
+      if (profileData && profileData.userName) {
+        setIsModalOpen(false); // Close modal if profileData is valid
+      } else {
+        const timer = setTimeout(() => {
+          setIsModalOpen(true); // Open modal after 3 seconds if profileData is invalid
+        }, 2000);
+        // Cleanup the timer on unmount or dependency change
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [profileData, loading]);
+  
 
 
 
 
-//get user enrolled courses
-  const fetchUserEnrolledCourses =  async () => {
+  //get user enrolled courses
+  const fetchUserEnrolledCourses = async () => {
     setLoading(true)
 
     try {
@@ -73,26 +76,86 @@ useEffect(() => {
       setEnrolledCourses(response.data)
     } catch (error) {
       console.log(error)
-    }finally {
+    } finally {
       setLoading(false)
     }
   }
 
-
-  
+  //fetch topics using courseId
   const fetchCourseTopics = async (courseId) => {
     try {
       // Passing courseId as a query parameter
-      const response = await axios.get(`/courses/getCourseTopics/${courseId}`, )
-      setCourseTopicsData(response.data);
+      const response = await axios.get(`/courses/getCourseTopics/${courseId}`,)
+
+      setCourseTopicsData(response.data.topics);
     } catch (error) {
       console.log(error);
-    } 
+    }
   };
 
+
+  //fetch projects using courseId
+  const fetchProjects = async (courseId) => {
+    setLoading(true);
+    try {
+      // Passing courseId as a query parameter
+      const response = await axios.get(`/courseProjects/getProjectByCourseID/${courseId}`,)
+      setprojects(response.data.projects);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  //fetch all quizzes using courseId
+  const fetchQuiz = async (courseId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/quiz/getquizByCourseId/${courseId}`,)
+      setQuiz(response.data.quizzes);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  //fetch  quizz using courseId
+  const fetchQuizById = async (quizId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/quiz/getquizByQuizId/${quizId}`,)
+      console.log(response)
+      setQuiz(response.data.Quiz);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+
+ //submit quiz result
+  const submitQuizResult = async (quizId,answers) => {
+    console.log(quizId,answers)
+    setLoading(true);
+    try {
+      const response = await axios.post(`/quiz/submitquiz/${quizId}`,{answers})
+      console.log(response)
+  
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+
+
   const values = {
-     data, setData ,icon,setLoading,loading,alert, setAlert,enrolledCourses,setIsModalOpen,
-     fetchUserData,fetchUserEnrolledCourses,profileData,fetchCourseTopics,courseTopicsData,setTopicData,TopicsData,isModalOpen
+    icon, setLoading, loading, alert, setAlert, enrolledCourses, setIsModalOpen, profileData,fetchProjects,projects,fetchQuiz,submitQuizResult,
+    fetchUserData, fetchUserEnrolledCourses, fetchCourseTopics, courseTopicsData, setTopicData, TopicsData, isModalOpen,quiz,fetchQuizById
   };
   return (
     <DataContext.Provider value={values}>

@@ -1,8 +1,7 @@
-// api.js
+
 import axios from 'axios';
 import { API_URL } from './config';
 import { getToken } from '../utils/tokenutils';
-
 
 
 // Check if the API URL is defined
@@ -37,6 +36,8 @@ api.interceptors.response.use(
     // Handle global errors, like token expiration
     if (error.response?.status === 401) {
       console.error('Unauthorized access - perhaps the token is invalid.');
+      // localStorage.removeItem('token')
+      // redirectToLogin('/login')
 
     }
     return Promise.reject(error);

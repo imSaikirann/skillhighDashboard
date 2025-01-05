@@ -1,4 +1,4 @@
-// config.js
+
 const getApiUrl = () => {
   const ENV = import.meta.env.VITE_ENV; // "development" or "production"
   

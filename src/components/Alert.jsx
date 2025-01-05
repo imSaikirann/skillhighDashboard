@@ -9,7 +9,7 @@ const Alert = () => {
     if (alert.isVisible) {
       const timer = setTimeout(() => {
         setAlert({ ...alert, isVisible: false });
-      }, alert.autoDismissTime || 4000); // Default to 4 seconds if not specified
+      }, alert.autoDismissTime || 2000); // Default to 2 seconds if not specified
 
       return () => clearTimeout(timer);
     }
