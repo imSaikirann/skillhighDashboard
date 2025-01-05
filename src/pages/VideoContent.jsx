@@ -106,7 +106,7 @@ export const VideoLesson = () => {
         }`}
       >
         <div className="flex items-center gap-4">
-          <span className="text-sm md:text-base lg:text-lg xl:text-xl">
+          <span className="text-sm md:text-base lg:text-base xl:text-base">
             {lesson.title}
           </span>
         </div>
@@ -122,24 +122,31 @@ export const VideoLesson = () => {
 </aside>
 
       {isModalVisible && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-              Lesson Description
-            </h2>
-            <p className="text-gray-700 dark:text-gray-300">
-              {courseTopicsData[selectedLessonIndex]?.description || 'No description available for this lesson.'}
-            </p>
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={closeModal}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-200"
-              >
-                Close
-              </button>
-            </div>
-          </div>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md  sm:max-w-3xl max-h-[80vh] overflow-y-auto"
+      >
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+          Lesson Description
+        </h2>
+        <p 
+  className="text-gray-700 dark:text-gray-300 text-justify"
+  style={{ whiteSpace: 'pre-line' }}
+>
+  {courseTopicsData[selectedLessonIndex]?.description || 'No description available for this lesson.'}
+</p>
+
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={closeModal}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-200"
+          >
+            Close
+          </button>
         </div>
+      </div>
+    </div>
+    
       )}
 
       <main className="flex-1 flex flex-col items-center justify-start md:justify-center p-8 md:p-6 h-auto mt-16">

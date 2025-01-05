@@ -31,12 +31,6 @@ export default function Login() {
         setAlert({ message: response.data.message, isVisible: true });
         setTimeout(() => {
           navigate('/');
-          // Reset fields after successful login
-          setEmail('');
-          setPassword('');
-          setIsEmailVerified(false);
-          setIsEmailModalOpen(false);
-          setIsOtpModalOpen(false);
         }, 2000);
       } else {
         setAlert({ message: 'Login failed. Please check your credentials.', isVisible: true });
@@ -54,7 +48,7 @@ export default function Login() {
   };
 
   const handleVerifyEmailForForgotPassword = () => {
-    setIsForgotPassword(true);
+    setIsForgotPassword(true)
     setIsEmailModalOpen(true);
   };
 
@@ -78,6 +72,7 @@ export default function Login() {
     }
   };
 
+
   const handleEmailOtpSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -85,14 +80,17 @@ export default function Login() {
     let response;
     try {
       if (IsForgotPassword) {
+        console.log("pass")
         response = await axios.post('/dashboardUsers/verify-email', { email, otp });
         if (response.data) {
           setAlert({ message: 'Email verified successfully!', isVisible: true });
           setIsEmailModalOpen(false)
           setIsOtpModalOpen(false)
           setIsNewPasswordModalOpen(true);
+          setIsForgotPassword(false)
         }
       } else {
+        console.log("hi")
         response = await axios.post('/dashboardUsers/verify-email', { email, otp });
         if (response.data) {
           setAlert({ message: 'Email verified successfully!', isVisible: true });
@@ -102,24 +100,23 @@ export default function Login() {
         }
       }
     } catch (error) {
+      console.log(error)
       const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
       setAlert({ message: errorMessage, isVisible: true });
     } finally {
       setIsSubmitting(false);
     }
   };
+  
 
   const handleNewPasswordSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
       setLoading(true);
-      const response = await axios.post('/dashboardUsers/forgot-password', { email, newPassword: password });
+      const response = await axios.post('/dashboardUsers/forgot-password', {email, newPassword:password });
       setAlert({ message: 'Password reset successfully!', isVisible: true });
       setIsNewPasswordModalOpen(false);
-      
-      // Reset the password field after successful password reset
-      setPassword('');
     } catch (error) {
       setAlert({ message: error.response?.data?.message || 'Password reset failed.', isVisible: true });
     } finally {
@@ -132,12 +129,9 @@ export default function Login() {
     setIsEmailModalOpen(false);
     setIsOtpModalOpen(false);
     setIsNewPasswordModalOpen(false);
-
-    // Reset form fields after closing the modal
-    setEmail('');
-    setPassword('');
-    setOtp('');
   };
+
+  
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-50 p-6 dark:bg-darkBg">

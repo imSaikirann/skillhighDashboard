@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import ProtectedRoutes from './pages/ProtectedRoutes';
 import { QuizList } from './pages/QuizList';
 import VideoLesson from './pages/VideoContent';
+import InstructionsPage from './pages/Instructions';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
                   <Route path="/quiz" element={<QuizComponent />} />
                   <Route path="/projects" element={<ProjectSubmissionForm />} />
                   <Route path="/quiz_list" element={<QuizList/>} />
+                  <Route path="/instructions" element={<InstructionsPage/>} />
              
 
                 </Routes>

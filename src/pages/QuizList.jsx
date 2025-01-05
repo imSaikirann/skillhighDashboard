@@ -6,12 +6,12 @@ import { useData } from '../store/DataContext';
 import { useNavigateToQuiz } from '../utils/navigateUtils';
 
 export const QuizList = () => {
-  const { fetchQuiz, quiz, loading } = useData(); 
+  const { fetchQuiz, quiz, loading } = useData();
   const location = useLocation();
   const navigate = useNavigate();
   const redirectToQuiz = useNavigateToQuiz();
 
-  const { courseId, courseName } = location.state || {}; 
+  const { courseId, courseName } = location.state || {};
 
   const handleQuizId = (quizId) => {
     redirectToQuiz(quizId);
@@ -31,11 +31,15 @@ export const QuizList = () => {
     return <Spinner />;
   }
 
-  // If no quizzes available, display a message
+  // If no quizzes available, display a custom message
   if (!Array.isArray(quiz) || quiz.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-darkBg mt-26 md:mt-0">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-darkBg mt-26 md:mt-0">
         <Alert message="No quizzes available" isVisible={true} />
+        <p className="mt-4 text-gray-700 dark:text-gray-300 text-lg text-center">
+          Stay tuned! New quizzes for "{courseName || 'this course'}" are coming soon. 
+          Check back later to test your knowledge and skills.
+        </p>
       </div>
     );
   }
@@ -54,7 +58,6 @@ export const QuizList = () => {
 
         {/* Quiz Cards (Grid layout with columns) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-          {/* Make sure quiz is an array before calling slice */}
           {(quiz || []).slice(0, 3).map((quizItem, index) => (
             <div
               key={quizItem.id}

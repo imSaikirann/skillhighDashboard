@@ -88,7 +88,17 @@ export const ProjectSubmissionForm = () => {
   if (loading) {
     return <Spinner />;
   }
-
+  if (!Array.isArray(projects) || projects.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-darkBg mt-26 md:mt-0">
+        <Alert message="No projects available" isVisible={true} />
+        <p className="mt-4 text-gray-700 dark:text-gray-300 text-lg text-center">
+          We are working on adding projects for "{courseName || 'this course'}". 
+          Please check back soon to submit your work and showcase your skills!
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-darkBg mt-26 md:mt-0">
       <Alert />
