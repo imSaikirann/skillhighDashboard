@@ -49,7 +49,7 @@ export const DataProvider = ({ children }) => {
 
   // Modal check when profileData changes
   useEffect(() => {
-    if (loading) {
+ 
 
       if (profileData && profileData.userName) {
         setIsModalOpen(false); // Close modal if profileData is valid
@@ -60,7 +60,7 @@ export const DataProvider = ({ children }) => {
         // Cleanup the timer on unmount or dependency change
         return () => clearTimeout(timer);
       }
-    }
+    
   }, [profileData, loading]);
   
 

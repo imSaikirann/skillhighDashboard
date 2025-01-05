@@ -10,6 +10,7 @@ export default function Login() {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+  const [IsForgotPassword, setIsForgotPassword] = useState(false);
   const [isNewPasswordModalOpen, setIsNewPasswordModalOpen] = useState(false); // For reset password
   const [otp, setOtp] = useState('');
   const { loading, setLoading, setAlert } = useData();
@@ -30,6 +31,12 @@ export default function Login() {
         setAlert({ message: response.data.message, isVisible: true });
         setTimeout(() => {
           navigate('/');
+          // Reset fields after successful login
+          setEmail('');
+          setPassword('');
+          setIsEmailVerified(false);
+          setIsEmailModalOpen(false);
+          setIsOtpModalOpen(false);
         }, 2000);
       } else {
         setAlert({ message: 'Login failed. Please check your credentials.', isVisible: true });
@@ -46,13 +53,17 @@ export default function Login() {
     setIsEmailModalOpen(true);
   };
 
+  const handleVerifyEmailForForgotPassword = () => {
+    setIsForgotPassword(true);
+    setIsEmailModalOpen(true);
+  };
+
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
       setLoading(true);
       const response = await axios.post('/dashboardUsers/send-otp', { email });
-
       if (response.data.success) {
         setAlert({ message: 'OTP sent successfully!', isVisible: true });
         setIsEmailModalOpen(false);
@@ -67,46 +78,28 @@ export default function Login() {
     }
   };
 
-  const handleForgotOtpSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const response = await axios.post('/dashboardUsers/verify-email', { email, otp });
-      console.log(response)
-      if (response.data.success) {
-        setAlert({ message: 'Email verified successfully!', isVisible: true });
-        setIsEmailVerified(true);
-        setIsOtpModalOpen(false);
-        setIsNewPasswordModalOpen(true);
-      }
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
-      setAlert({ message: errorMessage, isVisible: true });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const handleEmailOtpSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+  
+    let response;
     try {
-      if(forgoutpassword)
-      {
-      const response = await axios.post('/dashboardUsers/forgot-password', { password });
-
-      }
-      else
-      {
-        const response = await axios.post('/dashboardUsers/verify-email', { email, otp });
-
-      }
-      console.log(response)
-      if (response) {
-        setAlert({ message: 'Email verified successfully!', isVisible: true });
-        localStorage.setItem('token',response.data.token)
-        setIsEmailVerified(true);
-        navigate('/')
+      if (IsForgotPassword) {
+        response = await axios.post('/dashboardUsers/verify-email', { email, otp });
+        if (response.data) {
+          setAlert({ message: 'Email verified successfully!', isVisible: true });
+          setIsEmailModalOpen(false)
+          setIsOtpModalOpen(false)
+          setIsNewPasswordModalOpen(true);
+        }
+      } else {
+        response = await axios.post('/dashboardUsers/verify-email', { email, otp });
+        if (response.data) {
+          setAlert({ message: 'Email verified successfully!', isVisible: true });
+          localStorage.setItem('token', response.data.token);
+          setIsEmailVerified(true);
+          navigate('/');
+        }
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
@@ -121,9 +114,12 @@ export default function Login() {
     setIsSubmitting(true);
     try {
       setLoading(true);
-      const response = await axios.post('/dashboardUsers/set-password', { password });
+      const response = await axios.post('/dashboardUsers/forgot-password', { email, newPassword: password });
       setAlert({ message: 'Password reset successfully!', isVisible: true });
       setIsNewPasswordModalOpen(false);
+      
+      // Reset the password field after successful password reset
+      setPassword('');
     } catch (error) {
       setAlert({ message: error.response?.data?.message || 'Password reset failed.', isVisible: true });
     } finally {
@@ -136,10 +132,11 @@ export default function Login() {
     setIsEmailModalOpen(false);
     setIsOtpModalOpen(false);
     setIsNewPasswordModalOpen(false);
-  };
 
-  const handleForgotPassword = () => {
-    setIsEmailModalOpen(true);
+    // Reset form fields after closing the modal
+    setEmail('');
+    setPassword('');
+    setOtp('');
   };
 
   return (
@@ -150,11 +147,11 @@ export default function Login() {
         <form onSubmit={handleLogin} className="space-y-6">
           {/* Email Input */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-green-50">Email Address</label>
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-darkInput dark:text-gray-300 dark:border-gray-600"
+              className="w-full px-4 py-3 mt-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-dark dark:text-gray-300 dark:border-gray-600"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -164,11 +161,11 @@ export default function Login() {
 
           {/* Password Input */}
           <div className="relative">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-green-50">Password</label>
             <input
               type={passwordVisible ? "text" : "password"}
               id="password"
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-darkInput dark:text-gray-300 dark:border-gray-600"
+              className="w-full px-4 py-3 mt-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-dark dark:text-gray-300 dark:border-gray-600"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -194,7 +191,7 @@ export default function Login() {
 
           {/* Forgot Password Link */}
           <div className="text-center mt-4">
-            <a onClick={handleForgotPassword} className="text-sm text-primary cursor-pointer hover:underline">
+            <a onClick={handleVerifyEmailForForgotPassword} className="text-sm text-primary cursor-pointer hover:underline">
               Forgot Password?
             </a>
           </div>
@@ -268,7 +265,7 @@ export default function Login() {
                 <input
                   type="text"
                   id="otp"
-                  className="w-full px-4 py-3 mt-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-darkInput dark:text-gray-300"
+                  className="w-full px-4 py-3 mt-2 border text-black  border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-dark dark:text-gray-300"
                   placeholder="Enter the OTP sent to your email"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}

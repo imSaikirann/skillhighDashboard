@@ -36,6 +36,11 @@ export default function Profile() {
     return <Spinner />;
   }
 
+  const handleRedirect = () => {
+    window.location.href = "https://skillhigh.in"; // Redirect to skillhigh.in
+  };
+  
+
   return (
     <div className="flex flex-col items-center justify-start p-4 sm:p-6 bg-gray-50 dark:bg-darkBg min-h-screen mt-20">
       {/* Profile Header */}
@@ -172,7 +177,8 @@ export default function Profile() {
         <div className="flex justify-center">
           <button
             style={gradientStyle}
-            className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-3 px-6 rounded-full text-base sm:text-lg font-medium hover:opacity-90 transition duration-300 focus:ring-4 focus:ring-indigo-300 focus:outline-none"
+            onClick={handleRedirect}
+            className=" text-white py-3 px-6 rounded-full text-base sm:text-lg font-medium hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-primary focus:outline-none"
             aria-label="Enroll in another course"
           >
             Enroll in Another Course

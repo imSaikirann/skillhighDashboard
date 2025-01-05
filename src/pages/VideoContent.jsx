@@ -6,7 +6,7 @@ import axios from '../config/axiosConfig';
 export const VideoLesson = () => {
   const [isSidebarVisible, setSidebarVisible] = useState(false);
   const [checkedLessons, setCheckedLessons] = useState({});
-  const [selectedLessonIndex, setSelectedLessonIndex] = useState(null); // Track active lesson index
+  const [selectedLessonIndex, setSelectedLessonIndex] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { courseTopicsData, setTopicData, fetchCourseTopics } = useData();
   const location = useLocation();
@@ -28,13 +28,11 @@ export const VideoLesson = () => {
       setCheckedLessons(initialChecked);
       setTopicData(courseTopicsData[0]);
 
-      // Load the last selected lesson from localStorage
       const lastSelectedIndex = localStorage.getItem('selectedLessonIndex');
       if (lastSelectedIndex !== null) {
         setSelectedLessonIndex(Number(lastSelectedIndex));
         setIsLoading(false);
       } else {
-        // Default to the first lesson if no selection is saved
         setSelectedLessonIndex(0);
         setIsLoading(false);
       }
@@ -44,8 +42,6 @@ export const VideoLesson = () => {
   const handleLessonClick = (index) => {
     setSelectedLessonIndex(index);
     setSidebarVisible(false);
-
-    // Save selected lesson index in localStorage
     localStorage.setItem('selectedLessonIndex', index);
   };
 
@@ -65,81 +61,87 @@ export const VideoLesson = () => {
     }
   };
 
-  const openModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setIsModalVisible(false);
-  };
+  const openModal = () => setIsModalVisible(true);
+  const closeModal = () => setIsModalVisible(false);
 
   const handleCheckboxChange = (index, topicId) => {
     const updatedChecked = { ...checkedLessons, [index]: !checkedLessons[index] };
     setCheckedLessons(updatedChecked);
+
+    // Call the API to update the backend
     updateCheckbox(courseId, topicId, updatedChecked[index]);
   };
 
   const updateCheckbox = async (courseId, topicId, completed) => {
     try {
-      await axios.post('/dashboardUsers/updateTopicProgress', { courseId, topicId, completed });
+      const response = await axios.post('/dashboardUsers/updateTopicProgress', { courseId, topicId, completed });
+     
     } catch (error) {
       console.error('Error updating checkbox:', error.response?.data || error.message);
+
+      // Optionally revert the checkbox state on error
+      setCheckedLessons((prev) => ({ ...prev, [index]: !prev[index] }));
     }
   };
 
   return (
-    <div className="flex flex-col md:flex-row-reverse h-screen bg-gray-100 dark:bg-darkBg text-gray-800 dark:text-gray-200 font-sans">
-      {/* Sidebar */}
-      <aside
-        className={`fixed md:relative p-4 z-20 top-0 left-0 pt-24 h-full bg-white border-r dark:bg-darkBg shadow-xl md:shadow-none transform transition-transform duration-300 w-72 md:w-1/4 overflow-y-auto ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-          }`}
+    <div className="flex flex-col md:flex-row-reverse h-screen  dark:bg-darkBg text-gray-800 dark:text-gray-200 ">
+     <aside
+  className={`fixed md:relative p-4 z-20 top-0 left-0 pt-24 h-full bg-white border-r dark:bg-darkBg shadow-xl md:shadow-none transform transition-transform duration-300 w-72 md:w-1/4 overflow-y-auto ${
+    isSidebarVisible ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+  }`}
+>
+  <h2 className="text-xl md:text-2xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    Lessons
+  </h2>
+  <ul className="space-y-6">
+    {courseTopicsData?.map((lesson, index) => (
+      <li
+        key={lesson.id || index}
+        onClick={() => handleLessonClick(index)}
+        className={`flex items-center justify-between p-4 text-white rounded-lg shadow-md transition duration-200 ease-in-out cursor-pointer ${
+          selectedLessonIndex === index
+            ? 'bg-primary'
+            : 'bg-gray-750 dark:bg-gray-700 hover:bg-gray-800'
+        }`}
       >
-        <h2 className="text-2xl font-bold mb-8 text-gray-800 dark:text-gray-200">Lessons</h2>
-        <ul className="space-y-6">
-          {courseTopicsData?.map((lesson, index) => (
-            <li
-              key={lesson.id || index}
-              onClick={() => handleLessonClick(index)}
-              className={`flex items-center justify-between p-4 text-white rounded-lg shadow-md transition duration-200 ease-in-out cursor-pointer ${selectedLessonIndex === index ? 'bg-primary' : 'bg-gray-750 dark:bg-gray-700 hover:bg-gray-800'}`}
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-lg">{lesson.title}</span>
-              </div>
-              <div className="flex items-center gap-4">
-                {/* Checkbox */}
-                <input
-                  type="checkbox"
-                  checked={!!checkedLessons[index]}
-                  onChange={() => handleCheckboxChange(index, lesson.id)} // Pass the correct topicId
-                  className="w-6 h-6 border-2 rounded-md bg-gray-200 border-gray-400 cursor-pointer flex justify-center items-center transition duration-200 ease-in-out"
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
-      </aside>
-      {isModalVisible && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full">
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-        Lesson Description
-      </h2>
-      <p className="text-gray-700 dark:text-gray-300">
-        {courseTopicsData[selectedLessonIndex]?.description || 'No description available for this lesson.'}
-      </p>
-      <div className="mt-6 flex justify-end">
-        <button
-          onClick={closeModal}
-          className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-200"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+        <div className="flex items-center gap-4">
+          <span className="text-sm md:text-base lg:text-lg xl:text-xl">
+            {lesson.title}
+          </span>
+        </div>
+        <input
+          type="checkbox"
+          checked={!!checkedLessons[index]}
+          onChange={() => handleCheckboxChange(index, lesson.id)}
+          className="w-6 h-6 border-2 rounded-md bg-gray-200 border-gray-400 cursor-pointer transition duration-200 ease-in-out checked:bg-primary checked:border-primary appearance-none checked:after:content-['✔'] checked:after:text-white checked:after:font-bold checked:after:flex checked:after:justify-center checked:after:items-center"
+        />
+      </li>
+    ))}
+  </ul>
+</aside>
 
-      {/* Main Content */}
+      {isModalVisible && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+              Lesson Description
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300">
+              {courseTopicsData[selectedLessonIndex]?.description || 'No description available for this lesson.'}
+            </p>
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={closeModal}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-200"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="flex-1 flex flex-col items-center justify-start md:justify-center p-8 md:p-6 h-auto mt-16">
         <button
           className="md:hidden fixed bottom-10 right-4 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary transition duration-200 z-50"
@@ -148,8 +150,6 @@ export const VideoLesson = () => {
         >
           {isSidebarVisible ? 'Hide Contents' : 'Show Contents'}
         </button>
-
-        {/* Video Player Section */}
         {isLoading ? (
           <div className="w-full max-w-5xl bg-gray-300 dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden mt-4 animate-pulse">
             <div className="relative w-full pb-[56.25%] bg-gray-400 dark:bg-gray-600"></div>
@@ -168,46 +168,36 @@ export const VideoLesson = () => {
             </div>
           </div>
         )}
-
-        {/* Lesson Title, Description, and Navigation */}
         {!isLoading && (
-         <div className="mt-6 flex flex-col sm:flex-row gap-10 items-center justify-between w-full max-w-5xl">
-         {/* Lesson Title and Modal Button */}
-         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8 w-full sm:w-auto">
-           <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 text-center sm:text-left">
-             {courseTopicsData[selectedLessonIndex]?.title || 'Lesson Title'}
-           </h1>
-           <button
-             onClick={openModal}
-             className="bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:bg-main transition duration-200"
-           >
-             Open Lesson Description
-           </button>
-         </div>
-       
-         {/* Navigation Buttons */}
-         <div className="flex gap-6">
-           <button
-             onClick={handlePrevLesson}
-             disabled={selectedLessonIndex === 0}
-             className={`px-6 py-3 rounded-full shadow-md transition duration-200 ${selectedLessonIndex === 0
-               ? 'bg-gray-400 cursor-not-allowed text-gray-700'
-               : 'bg-primary text-black hover:bg-primary'}`}
-           >
-             Previous
-           </button>
-           <button
-             onClick={handleNextLesson}
-             disabled={selectedLessonIndex === courseTopicsData.length - 1}
-             className={`px-6 py-3 rounded-full shadow-md transition duration-200 ${selectedLessonIndex === courseTopicsData.length - 1
-               ? 'bg-gray-400 cursor-not-allowed text-gray-700'
-               : 'bg-primary text-black hover:bg-primary'}`}
-           >
-             Next
-           </button>
-         </div>
-       </div>
-       
+          <div className="mt-6 flex flex-col sm:flex-row gap-10 items-center justify-between w-full max-w-5xl">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8 w-full sm:w-auto">
+              <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 text-center sm:text-left">
+                {courseTopicsData[selectedLessonIndex]?.title || 'Lesson Title'}
+              </h1>
+              <button
+                onClick={openModal}
+                className="bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:bg-main transition duration-200"
+              >
+                Description
+              </button>
+            </div>
+            <div className="flex gap-6">
+              <button
+                onClick={handlePrevLesson}
+                disabled={selectedLessonIndex === 0}
+                className={`px-6 py-3 rounded-full shadow-md transition duration-200 ${selectedLessonIndex === 0 ? 'bg-gray-400 cursor-not-allowed text-gray-700' : 'bg-primary text-black hover:bg-primary'}`}
+              >
+                Previous
+              </button>
+              <button
+                onClick={handleNextLesson}
+                disabled={selectedLessonIndex === courseTopicsData.length - 1}
+                className={`px-6 py-3 rounded-full shadow-md transition duration-200 ${selectedLessonIndex === courseTopicsData.length - 1 ? 'bg-gray-400 cursor-not-allowed text-gray-700' : 'bg-primary text-black hover:bg-primary'}`}
+              >
+                Next
+              </button>
+            </div>
+          </div>
         )}
       </main>
     </div>

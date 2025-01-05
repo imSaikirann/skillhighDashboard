@@ -34,8 +34,14 @@ jobs:
         run: |
           # Loop through all files in the dist directory and upload each one
           find ./dist -type f | while read file; do
-            echo "Uploading $file"
-            curl -X PUT "https://sg.storage.bunnycdn.com/${{ secrets.BUNNY_ZONE_NAME }}/user-dashboard/$(basename $file)" \
+            # Get the relative path from the dist folder
+            relative_path=$(echo "$file" | sed 's|^./dist/||')
+            # Modify the relative path to put files in the 'app' folder on Bunny.net
+            target_path="app/$relative_path"
+            echo "Uploading $file to /$target_path"
+            
+            # Upload the current file to Bunny.net inside the 'app' folder
+            curl -X PUT "https://sg.storage.bunnycdn.com/${{ secrets.BUNNY_ZONE_NAME }}/$target_path" \
               -H "AccessKey: ${{ secrets.BUNNY_ACCESS_KEY }}" \
               --data-binary @"$file"  # Upload the current file
           done
