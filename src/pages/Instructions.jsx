@@ -21,7 +21,7 @@ const InstructionsPage = () => {
 
           <div className="instruction bg-gray-50 p-4 rounded-lg shadow-sm dark:bg-gray-700 dark:text-white">
             <h2 className="text-xl text-dark font-semibold">3. Video Uploads</h2>
-            <p className="mt-2 text-gray-700 dark:text-gray-300">If no Lessons have been uploaded, the message: <strong>"Lessons will be updated soon.."</strong> will be displayed We’re working on uploading lessons. Please be patient.</p>
+            <p className="mt-2 text-gray-700 dark:text-gray-300">If no lessons have been uploaded, They will be updated soon. We are working on it . Please be patient</p>
           </div>
 
           <div className="instruction bg-gray-50 p-4 rounded-lg shadow-sm dark:bg-gray-700 dark:text-white">
