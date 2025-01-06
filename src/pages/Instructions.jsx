@@ -15,17 +15,17 @@ const InstructionsPage = () => {
           </div>
 
           <div className="instruction bg-gray-50 p-4 rounded-lg shadow-sm dark:bg-gray-700 dark:text-white">
-            <h2 className="text-xl text-dark font-semibold">2. Account Renewal</h2>
+            <h2 className="text-xl text-dark dark:text-gray-100 font-semibold">2. Account Renewal</h2>
             <p className="mt-2 text-gray-700 dark:text-gray-300">After 6 months, a charge of ₹500 will be applied for an additional 6 months of account usage.</p>
           </div>
 
           <div className="instruction bg-gray-50 p-4 rounded-lg shadow-sm dark:bg-gray-700 dark:text-white">
-            <h2 className="text-xl text-dark font-semibold">3. Video Uploads</h2>
+            <h2 className="text-xl text-dark dark:text-gray-100 font-semibold">3. Video Uploads</h2>
             <p className="mt-2 text-gray-700 dark:text-gray-300">If no lessons have been uploaded, They will be updated soon. We are working on it . Please be patient</p>
           </div>
 
           <div className="instruction bg-gray-50 p-4 rounded-lg shadow-sm dark:bg-gray-700 dark:text-white">
-            <h2 className="text-xl text-dark font-semibold">4. User Interface Issues</h2>
+            <h2 className="text-xl text-dark dark:text-gray-100 font-semibold">4. User Interface Issues</h2>
             <p className="mt-2 text-gray-700 dark:text-gray-300">If there are any issues with the user interface, please email us with a screenshot at: <strong>admin@skillhigh.in</strong></p>
           </div>
         </div>

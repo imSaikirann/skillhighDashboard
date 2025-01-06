@@ -3,6 +3,7 @@ import axios from '../config/axiosConfig';
 import { useData } from "../store/DataContext";
 import Alert from '../components/Alert';
 import { useNavigate } from 'react-router-dom';
+import newLogo from '../assets/newLogo.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -76,7 +77,7 @@ export default function Login() {
   const handleEmailOtpSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
+
     let response;
     try {
       if (IsForgotPassword) {
@@ -107,14 +108,14 @@ export default function Login() {
       setIsSubmitting(false);
     }
   };
-  
+
 
   const handleNewPasswordSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
       setLoading(true);
-      const response = await axios.post('/dashboardUsers/forgot-password', {email, newPassword:password });
+      const response = await axios.post('/dashboardUsers/forgot-password', { email, newPassword: password });
       setAlert({ message: 'Password reset successfully!', isVisible: true });
       setIsNewPasswordModalOpen(false);
     } catch (error) {
@@ -131,22 +132,23 @@ export default function Login() {
     setIsNewPasswordModalOpen(false);
   };
 
-  
+
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-50 p-6 dark:bg-darkBg">
+    <div className="min-h-screen flex justify-center items-center  p-6 dark:bg-darkBg">
       <Alert />
-      <div className="bg-white p-10 rounded-lg shadow-lg w-full sm:w-[500px] dark:bg-darkBg dark:border-2 dark:border-dark">
-        <h2 className="text-3xl font-semibold text-center text-primary dark:text-primary mb-6">Login</h2>
-        <form onSubmit={handleLogin} className="space-y-6">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full sm:w-[400px] md:w-[500px] dark:bg-gray-800 dark:border-2 dark:border-gray-700 mx-auto">
+        <img src={newLogo} className="h-auto w-[150px] mx-auto mb-6" alt="Logo" />
+        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">Sign in to your account</h2>
+        <form onSubmit={handleLogin} className="space-y-6 md:space-y-8">
           {/* Email Input */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-green-50">Email Address</label>
+            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-3 mt-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-dark dark:text-gray-300 dark:border-gray-600"
-              placeholder="Enter your email"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="name@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -155,12 +157,12 @@ export default function Login() {
 
           {/* Password Input */}
           <div className="relative">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-green-50">Password</label>
+            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
             <input
               type={passwordVisible ? "text" : "password"}
               id="password"
-              className="w-full px-4 py-3 mt-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-dark dark:text-gray-300 dark:border-gray-600"
-              placeholder="Enter your password"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -177,16 +179,19 @@ export default function Login() {
           {/* Submit Button */}
           <button
             type="submit"
-            className={`w-full py-3 px-4 bg-primary text-white font-semibold rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300 ease-in-out ${loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+            className={`w-full bg-primary text-white py-4 rounded-lg text-md focus:outline-none focus:ring-3 focus:ring-primary hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ${loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
             disabled={isSubmitting || loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Logging in..." : "Sign in"}
           </button>
 
           {/* Forgot Password Link */}
-          <div className="text-center mt-4">
-            <a onClick={handleVerifyEmailForForgotPassword} className="text-sm text-primary cursor-pointer hover:underline">
-              Forgot Password?
+          <div className="flex justify-between items-center mt-4">
+            <a
+              onClick={handleVerifyEmailForForgotPassword}
+              className="text-sm text-primary-600 hover:underline dark:text-primary-500"
+            >
+              Forgot password?
             </a>
           </div>
         </form>
@@ -196,54 +201,56 @@ export default function Login() {
           {!isEmailVerified ? (
             <button
               onClick={handleVerifyEmail}
-              className="text-primary hover:underline"
+              className="text-primary hover:underline dark:text-primary"
             >
               Verify Email ID
             </button>
           ) : (
-            <p className="text-md text-primary">Email Verified Successfully!</p>
+            <p className="text-md text-primary-600 dark:text-primary-500">Email Verified Successfully!</p>
           )}
         </div>
       </div>
 
+
       {/* Email Verification Modal */}
       {isEmailModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full sm:w-96 dark:bg-darkBg dark:border-2 dark:border-dark">
-            <h2 className="text-xl font-bold text-center mb-4">Verify Email</h2>
-            <form onSubmit={handleEmailSubmit}>
-              <div className="mb-4">
-                <label htmlFor="verifyEmail" className="block text-sm font-medium">Enter your email</label>
-                <input
-                  type="email"
-                  id="verifyEmail"
-                  className="w-full px-4 py-3 mt-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-darkInput dark:text-gray-300"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className={`px-4 py-2 bg-primary text-white rounded-md hover:bg-primary  ${loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"} `}
-                  disabled={isSubmitting}
-                >
-                  {loading ? "Verifying" : "Verify"}
-                </button>
-              </div>
-            </form>
-          </div>
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white p-8 rounded-lg shadow-lg w-full sm:w-96 dark:bg-darkBg dark:border-2 dark:border-dark">
+      <h2 className="text-xl font-bold text-center text-gray-900 dark:text-white mb-6">Verify Email</h2>
+      <form onSubmit={handleEmailSubmit}>
+        <div className="mb-6">
+          <label htmlFor="verifyEmail" className="block text-sm font-medium text-gray-900 dark:text-white">Enter your email</label>
+          <input
+            type="email"
+            id="verifyEmail"
+            className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-darkInput dark:text-gray-300 dark:border-gray-600 placeholder:text-gray-500"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
-      )}
+        <div className="flex justify-between items-center space-x-4">
+          <button
+            type="button"
+            onClick={handleCloseModal}
+            className="px-6 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className={`px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-600 transition-colors ${loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+            disabled={isSubmitting || loading}
+          >
+            {loading ? "Verifying..." : "Verify"}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
 
       {/* OTP Modal */}
       {isOtpModalOpen && (
