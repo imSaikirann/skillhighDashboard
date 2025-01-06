@@ -100,7 +100,7 @@ export const VideoLesson = () => {
               onClick={() => handleLessonClick(index)}
               className={`flex items-center justify-between p-4 text-white rounded-lg shadow-md transition duration-200 ease-in-out cursor-pointer ${selectedLessonIndex === index
                   ? 'bg-primary'
-                  : 'bg-gray-750 dark:bg-gray-700 hover:bg-gray-800'
+                  : 'bg-gray-800 dark:bg-gray-700 hover:bg-gray-800'
                 }`}
             >
               <div className="flex items-center gap-4">
