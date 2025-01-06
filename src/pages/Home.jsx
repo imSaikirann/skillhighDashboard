@@ -10,7 +10,7 @@ import Alert from '../components/Alert';
 
 export default function Home() {
   const { fetchUserData, fetchUserEnrolledCourses, enrolledCourses, loading, isModalOpen, setIsModalOpen, profileData,setAlert } = useData();
-  console.log(enrolledCourses)
+
   // State for Modal
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -77,7 +77,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-darkBg py-12 px-4 sm:px-6 lg:px-8 mt-20">
+    <div className="min-h-screen  dark:bg-darkBg py-12 px-4 sm:px-6 lg:px-8 mt-20">
 
       {/* Greeting and User Info */}
       <div className=" text-center sm:text-left max-w-7xl mx-auto mb-12">
