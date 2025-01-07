@@ -94,52 +94,54 @@ export const VideoLesson = () => {
           Lessons
         </h2>
         <ul className="space-y-6">
-          {courseTopicsData?.map((lesson, index) => (
-            <li
-              key={lesson.id || index}
-              onClick={() => handleLessonClick(index)}
-              className={`flex items-center justify-between p-4 text-white rounded-lg shadow-md transition duration-200 ease-in-out cursor-pointer ${selectedLessonIndex === index
-                  ? 'bg-primary'
-                  : 'bg-gray-800 dark:bg-gray-700 hover:bg-gray-800'
-                }`}
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-sm md:text-base lg:text-base xl:text-base">
-                  {lesson.title}
-                </span>
-              </div>
-              <input
-                type="checkbox"
-                checked={!!checkedLessons[index]}
-                onChange={() => handleCheckboxChange(index, lesson.id)}
-                className="w-6 h-6 border-2 rounded-md bg-gray-200 border-gray-400 cursor-pointer transition duration-200 ease-in-out checked:bg-primary checked:border-primary appearance-none checked:after:content-['✔'] checked:after:text-white checked:after:font-bold checked:after:flex checked:after:justify-center checked:after:items-center"
-              />
-            </li>
-          ))}
-        </ul>
+  {courseTopicsData?.map((lesson, index) => (
+    <li
+      key={lesson.id || index}
+      onClick={() => handleLessonClick(index)}
+      className={`flex items-center justify-between p-4 text-white rounded-lg shadow-md transition duration-200 ease-in-out cursor-pointer ${
+        selectedLessonIndex === index
+          ? 'bg-primary'
+          : 'bg-gray-800 dark:bg-gray-700 hover:bg-gray-800'
+      }`}
+    >
+      <div className="flex items-center gap-4">
+        <span className="text-sm md:text-base lg:text-base xl:text-base">
+          {lesson.title}
+        </span>
+      </div>
+      <input
+        type="checkbox"
+        checked={!!checkedLessons[index]}
+        onChange={() => handleCheckboxChange(index, lesson.id)}
+        className="w-6 h-6 min-w-[1.5rem] min-h-[1.5rem] border-2 rounded-md bg-gray-200 border-gray-400 cursor-pointer transition duration-200 ease-in-out checked:bg-primary checked:border-primary appearance-none checked:after:content-['✔'] checked:after:text-white checked:after:font-bold checked:after:flex checked:after:justify-center checked:after:items-center"
+      />
+    </li>
+  ))}
+</ul>
+
       </aside>
 
       {isModalVisible && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md sm:max-w-3xl max-h-[80vh] overflow-y-auto relative">
-      {/* Close Button */}
-      <button
-        onClick={closeModal}
-        className="absolute top-4 right-4 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-xl font-semibold"
-      >
-        &times;
-      </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md sm:max-w-3xl max-h-[80vh] overflow-y-auto relative">
+            {/* Close Button */}
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-xl font-semibold"
+            >
+              &times;
+            </button>
 
-      {/* Modal Content */}
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-        Lesson Description
-      </h2>
-      <p className="text-gray-700 dark:text-gray-300 text-justify" style={{ whiteSpace: 'pre-line' }}>
-        {courseTopicsData[selectedLessonIndex]?.description || 'No description available for this lesson.'}
-      </p>
-    </div>
-  </div>
-)}
+            {/* Modal Content */}
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
+              Lesson Description
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300 text-justify" style={{ whiteSpace: 'pre-line' }}>
+              {courseTopicsData[selectedLessonIndex]?.description || 'No description available for this lesson.'}
+            </p>
+          </div>
+        </div>
+      )}
 
 
       <main className="flex-1 flex flex-col items-center justify-start md:justify-center p-8 md:p-6 h-auto mt-16">
