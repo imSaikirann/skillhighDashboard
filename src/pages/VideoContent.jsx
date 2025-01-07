@@ -176,12 +176,12 @@ export const VideoLesson = () => {
               <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 text-center sm:text-left">
                 {courseTopicsData[selectedLessonIndex]?.title || 'Lesson Title'}
               </h1>
-              <button
+              {/* <button
                 onClick={openModal}
                 className="bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:bg-main transition duration-200"
               >
                 Description
-              </button>
+              </button> */}
             </div>
             <div className="flex gap-6">
               <button

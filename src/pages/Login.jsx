@@ -77,7 +77,6 @@ export default function Login() {
   const handleEmailOtpSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     let response;
     try {
       if (IsForgotPassword) {
@@ -91,7 +90,6 @@ export default function Login() {
           setIsForgotPassword(false)
         }
       } else {
-        console.log("hi")
         response = await axios.post('/dashboardUsers/verify-email', { email, otp });
         if (response.data) {
           setAlert({ message: 'Email verified successfully!', isVisible: true });
@@ -283,10 +281,10 @@ export default function Login() {
                 </button>
                 <button
                   type="submit"
-                  className={`px-4 py-2 bg-primary text-white rounded-md hover:bg-primary  ${loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-                  disabled={isSubmitting || loading}
+                  className={`px-4 py-2 bg-primary text-white rounded-md hover:bg-primary  ${isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                  disabled={isSubmitting}
                 >
-                  {loading ? "Verifying..." : "Submit"}
+                  {isSubmitting ? "Verifying..." : "Submit"}
                 </button>
               </div>
             </form>

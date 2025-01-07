@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useData } from '../store/DataContext';
 import Spinner from '../components/Spinner';
 import { gradientStyle } from '../components/ButtonGradient';
@@ -37,9 +37,22 @@ export default function Profile() {
   }
 
   const handleRedirect = () => {
-    window.location.href = "https://skillhigh.in"; // Redirect to skillhigh.in
+    window.location.href = "https://skillhigh.in/allcourses"; // Redirect to skillhigh.in
+  };
+  const displayExpiryDate = (courseExpiryDate) => {
+    const currentDate = new Date();
+    const expiryDate = new Date(courseExpiryDate);
+  
+    // Calculate the difference in months
+    const totalMonthsDiff = 
+      (expiryDate.getFullYear() - currentDate.getFullYear()) * 12 + 
+      expiryDate.getMonth() - currentDate.getMonth();
+  
+    // Check if 1 month is left
+    return totalMonthsDiff === 1;
   };
   
+
 
   return (
     <div className="flex flex-col items-center justify-start p-4 sm:p-6 bg-gray-50 dark:bg-darkBg min-h-screen mt-20">
@@ -84,12 +97,12 @@ export default function Profile() {
                 {course.courseName}
               </h3>
 
-              {/* Expiry Date */}
-              {course.expiryDate && (
-                <p className="text-sm sm:text-md text-gray-600 dark:text-gray-400 mb-4 text-center">
-                  <strong>Expiry Date:</strong> {new Date(course.expiryDate).toLocaleDateString()}
-                </p>
-              )}
+            {/* Expiry Date */}
+{course.expiryDate && displayExpiryDate(course.expiryDate) && (
+  <p className="text-sm sm:text-md text-gray-600 dark:text-gray-400 mb-4 text-center">
+    <strong>Expiry Date:</strong> {new Date(course.expiryDate).toLocaleDateString()}
+  </p>
+)}
 
               {/* Progress Stats */}
               <div className="grid grid-cols-3 gap-4">
