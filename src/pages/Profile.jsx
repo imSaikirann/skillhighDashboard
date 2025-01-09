@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useData } from '../store/DataContext';
 import Spinner from '../components/Spinner';
 import { gradientStyle } from '../components/ButtonGradient';
-import { useNavigateToProjects, useNavigateToQuizList } from '../utils/navigateUtils';
+import { useNavigateToProjects, useNavigateToQuizList,useNavigateToPlay } from '../utils/navigateUtils';
 
 export default function Profile() {
   const { profileData, fetchUserData, loading } = useData();
   const redirectToProjects = useNavigateToProjects();
   const redirectToQuizList = useNavigateToQuizList();
+  const navigateToPlay = useNavigateToPlay();
 
- 
+
 
   useEffect(() => {
     fetchUserData();
@@ -26,9 +27,9 @@ export default function Profile() {
   const getInitials = (name) => {
     return name
       ? name
-          .split(' ')
-          .map((n) => n[0].toUpperCase())
-          .join('')
+        .split(' ')
+        .map((n) => n[0].toUpperCase())
+        .join('')
       : 'U';
   };
 
@@ -42,16 +43,26 @@ export default function Profile() {
   const displayExpiryDate = (courseExpiryDate) => {
     const currentDate = new Date();
     const expiryDate = new Date(courseExpiryDate);
-  
+
     // Calculate the difference in months
-    const totalMonthsDiff = 
-      (expiryDate.getFullYear() - currentDate.getFullYear()) * 12 + 
+    const totalMonthsDiff =
+      (expiryDate.getFullYear() - currentDate.getFullYear()) * 12 +
       expiryDate.getMonth() - currentDate.getMonth();
-  
+
     // Check if 1 month is left
     return totalMonthsDiff === 1;
   };
-  
+
+   // Refactor handleCourseId to use the navigate function
+   const redirectToCourse = (courseId) => {
+
+    if (courseId) {
+      navigateToPlay(courseId); // Pass the courseId through state, not URL
+    } else {
+      console.error('Course ID is undefined or invalid.');
+    }
+  };
+
 
 
   return (
@@ -90,19 +101,20 @@ export default function Profile() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {profileData?.progress?.map((course, index) => (
             <div
+              onClick={()=>redirectToCourse(course.courseId)}
               key={index}
-              className="bg-white dark:bg-darkBg rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border dark:border-dark"
+              className="bg-white dark:bg-darkBg rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border dark:border-dark cursor-pointer"
             >
               <h3 className="text-lg sm:text-2xl font-semibold text-gray-800 dark:text-white mb-4 text-center">
                 {course.courseName}
               </h3>
 
-            {/* Expiry Date */}
-{course.expiryDate && displayExpiryDate(course.expiryDate) && (
-  <p className="text-sm sm:text-md text-gray-600 dark:text-gray-400 mb-4 text-center">
-    <strong>Expiry Date:</strong> {new Date(course.expiryDate).toLocaleDateString()}
-  </p>
-)}
+              {/* Expiry Date */}
+              {course.expiryDate && displayExpiryDate(course.expiryDate) && (
+                <p className="text-sm sm:text-md text-gray-600 dark:text-gray-400 mb-4 text-center">
+                  <strong>Expiry Date:</strong> {new Date(course.expiryDate).toLocaleDateString()}
+                </p>
+              )}
 
               {/* Progress Stats */}
               <div className="grid grid-cols-3 gap-4">
