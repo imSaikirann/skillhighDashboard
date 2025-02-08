@@ -61,7 +61,7 @@ export const QuizList = () => {
           {(quiz || []).slice(0, 3).map((quizItem, index) => (
             <div
               key={quizItem.id}
-              className="bg-white dark:bg-darkBg rounded-lg border-2 border-gray-100 dark:border-dark shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-6"
+              className="bg-white dark:bg-dark rounded-lg border-2 border-gray-100 dark:border-dark shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-6"
             >
               {/* Quiz Heading with Number */}
               <div className="bg-primary text-white py-2 px-4 rounded-t-lg mb-4">

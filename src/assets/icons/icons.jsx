@@ -160,6 +160,44 @@ export const DownloadIcon = ()=>{
   )
 }
 
+export const AddIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      strokeWidth="1.5"
+      width="24"
+      height="24"
+      color="#000000"
+      fill="none"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10.5"
+        stroke="currentColor"
+        strokeMiterlimit="10"
+      />
+      <line
+        x1="6.27"
+        y1="12"
+        x2="17.73"
+        y2="12"
+        stroke="currentColor"
+        strokeMiterlimit="10"
+      />
+      <line
+        x1="12"
+        y1="6.27"
+        x2="12"
+        y2="17.73"
+        stroke="currentColor"
+        strokeMiterlimit="10"
+      />
+    </svg>
+  );
+};
+
 
 
 

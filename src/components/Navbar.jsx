@@ -83,7 +83,7 @@ export default function Navbar() {
 
 
   const renderProfileMenu = () => (
-    <div className="absolute right-0 mt-2 w-auto bg-white dark:bg-dark dark:border-2 dark:border-dark rounded-lg shadow-lg">
+    <div className="absolute right-0 mt-2 w-auto bg-green-50 dark:bg-dark dark:border-2 dark:border-dark rounded-lg shadow-lg">
       <div className="px-4 py-3 border-b">
         <span className="block text-sm text-gray-900 dark:text-white">
           {profileData?.userName || 'Guest'}
@@ -126,10 +126,10 @@ export default function Navbar() {
 
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-darkBg fixed w-full top-0 left-0 z-50 shadow-md">
+    <nav className="bg-green-50 border-gray-200 dark:bg-darkBg fixed w-full top-0 left-0 z-50 shadow-md">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src={newLogo} className="h-auto w-[150px]" alt="Logo" />
+          <img src={newLogo} className="h-auto w-[180px]" alt="Logo" />
         </a>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-4 rtl:space-x-reverse">
           <div className="relative">

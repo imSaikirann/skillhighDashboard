@@ -100,7 +100,7 @@ export const ProjectSubmissionForm = () => {
     );
   }
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-darkBg mt-26 md:mt-0">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-darkBg mt-26 md:mt-14">
       <Alert />
       <div className="max-w-6xl w-full p-8 space-y-6">
         {/* Header Section */}
@@ -116,7 +116,7 @@ export const ProjectSubmissionForm = () => {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="bg-white dark:bg-darkBg rounded-lg border-2 border-gray-100 dark:border-dark shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-6"
+              className="bg-white dark:bg-dark rounded-lg border-2 border-gray-100 dark:border-dark shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-6"
             >
               {/* Status Badge */}
               {project.solutions?.[0]?.reviewState && (

@@ -147,7 +147,7 @@ export default function Home() {
       enrolledCourses.map((course) => (
         <div
           key={course.id}
-          className="bg-white dark:bg-darkBg rounded-lg shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 ease-in-out dark:border-2 dark:border-dark"
+          className="bg-white dark:bg-dark rounded-3xl shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 ease-in-out dark:border-2 dark:border-dark"
         >
           {/* Full Width and Height Image */}
           <div className="relative w-full h-72 sm:h-80 md:h-96 lg:h-72">

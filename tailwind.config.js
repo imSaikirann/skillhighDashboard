@@ -17,10 +17,10 @@ export default {
         primary: '#0D8267',
         secondary: '#ffed4a',
         accent: '#38b2ac',
-        dark: '#1a202c',
+        darkBg: '#1B1B1A',
         light: '#edf2f7',
         danger: '#e53e3e',
-        darkBg: "#121212", // Your custom dark background color
+        dark: "#121213", // Your custom dark background color
       },
       // Custom Animations
       animation: {
