@@ -48,6 +48,7 @@ export default function Profile() {
   if (loading) {
     return <Spinner />;
   }
+ 
 
   return (
     <div className="flex flex-col items-center p-4 sm:p-8 bg-green-50 dark:bg-darkBg min-h-screen mt-20">

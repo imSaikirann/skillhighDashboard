@@ -1,21 +1,36 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useData } from '../store/DataContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const QuizComponent = () => {
   const { fetchQuizById, quiz, loading, submitQuizResult } = useData();
   const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Destructure quizId from location.state, if available
   const { quizId } = location.state || {};
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
-  
+
   // Using useRef to store answers to avoid re-renders
   const answersRef = useRef([]);
+  console.log(quiz);
 
   useEffect(() => {
-    fetchQuizById(quizId);
+    if (quizId) {
+      fetchQuizById(quizId);
+    }
+
+    // Clean up quizId when navigating away
+    return () => {
+      // Reset the quizId when component unmounts or navigation happens
+      if (quizId) {
+        console.log("Resetting quizId on navigate away");
+      }
+    };
   }, [quizId]);
 
   // Ensure quiz.questions is available before rendering
@@ -54,8 +69,6 @@ export const QuizComponent = () => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption(""); // Reset selected option
     } else {
-      // Log the answers to see what has been collected
-      console.log(answersRef.current); // Now you will see the correct answers here
       await submitQuizResult(quizId, answersRef.current); // Submit the answers in the correct format
       setQuizCompleted(true);
     }
@@ -95,19 +108,24 @@ export const QuizComponent = () => {
 
             {/* Options */}
             <div className="space-y-4">
-              {quiz.questions[currentQuestionIndex].answers.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleOptionSelect(option)}
-                  className={`w-full py-3 text-left rounded-lg border pl-4 border-transparent transition-all duration-200 ${
-                    selectedOption === option.text
-                      ? "bg-white text-primary "
-                      : "bg-gray-100 dark:bg-gray-700 text-darkBg dark:text-gray-200"
-                  } hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
-                >
-                  {option.text}
-                </button>
-              ))}
+              {/* Ensure answers exist */}
+              {quiz.questions[currentQuestionIndex] && quiz.questions[currentQuestionIndex].answers?.length > 0 ? (
+                quiz.questions[currentQuestionIndex].answers.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleOptionSelect(option)}
+                    className={`w-full py-3 text-left rounded-lg border pl-4 border-transparent transition-all duration-200 ${
+                      selectedOption === option.text
+                        ? "bg-white text-primary "
+                        : "bg-gray-100 dark:bg-gray-700 text-darkBg dark:text-gray-200"
+                    } hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
+                  >
+                    {option.text}
+                  </button>
+                ))
+              ) : (
+                <div>No options available for this question.</div> // Fallback if no answers
+              )}
             </div>
 
             {/* Submit Button */}

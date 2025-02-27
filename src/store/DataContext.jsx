@@ -126,7 +126,7 @@ export const DataProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.get(`/quiz/getquizByQuizId/${quizId}`,)
-      console.log(response)
+      console.log("data",response)
       setQuiz(response.data.Quiz);
     } catch (error) {
       console.log(error);
