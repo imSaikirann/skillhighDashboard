@@ -40,10 +40,10 @@ export const QuizList = () => {
   if (loading) {
     return <Spinner />;
   }
-  console.log(quiz)
+
 
   // If no quiz is available, display a custom message
-  if (!quiz) {
+  if (!quiz || quiz.length === 0)  {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-darkBg mt-26 md:mt-0">
         <Alert message="No quizzes available" isVisible={true} />
