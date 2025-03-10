@@ -77,6 +77,11 @@ export const QuizComponent = () => {
   // Calculate progress
   const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
 
+  // Handle navigation to the home page
+  const handleReturnHome = () => {
+    navigate('/');
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen font-poppins mt-20">
       <div className="bg-white dark:bg-darkBg rounded-lg w-full max-w-3xl p-8 shadow-2xl transition-all duration-300 dark:border-2 dark:border-dark ">
@@ -151,12 +156,18 @@ export const QuizComponent = () => {
             <p className="text-lg text-gray-600 dark:text-gray-400">
               You answered {correctAnswers} out of {quiz.questions.length} questions correctly.
             </p>
-            <div className="mt-4">
+            <div className="mt-4 space-x-4">
               <button
                 onClick={() => window.location.reload()}
                 className="py-3 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Try Again
+              </button>
+              <button
+                onClick={handleReturnHome}
+                className="py-3 px-6 bg-gray-300 text-darkBg font-semibold rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Return to Home
               </button>
             </div>
           </div>
