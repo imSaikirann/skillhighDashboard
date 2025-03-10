@@ -5,8 +5,9 @@ import Spinner from '../components/Spinner';
 import { gradientStyle } from '../components/ButtonGradient';
 import axios from '../config/axiosConfig';
 import { Rocket } from '../assets/icons/icons';
-import Alert from '../components/Alert';
 
+// Lazy loading the Alert component
+const Alert = React.lazy(() => import('../components/Alert')); // dynamically import Alert
 
 export default function Home() {
   const { fetchUserData, fetchUserEnrolledCourses, enrolledCourses, loading, isModalOpen, setIsModalOpen, profileData,setAlert } = useData();
@@ -68,8 +69,6 @@ export default function Home() {
         });
       }
     }
-    
-   
   };
 
   if (loading) {
@@ -155,6 +154,7 @@ export default function Home() {
               src={course.courseThumbnail}
               alt={course.courseName}
               className="w-full h-full object-cover rounded-t-lg"
+              loading="lazy"
             />
           </div>
           <div className="p-6">
@@ -186,8 +186,6 @@ export default function Home() {
     )}
   </div>
 </div>
-
-
     </div>
   );
 }
