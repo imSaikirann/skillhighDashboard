@@ -12,6 +12,8 @@ export const ProjectSubmissionForm = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [projectDescription, setProjectDescription] = useState(""); 
   const [githubUrl, setGithubUrl] = useState(""); 
+  const [feedback, setFeedback] = useState(""); // Store feedback
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { courseId, courseName } = location.state || {}; 
@@ -83,6 +85,14 @@ export const ProjectSubmissionForm = () => {
       setAlert({ message: error.response?.data?.message, isVisible: true });
     }
   };
+
+  const handleShowFeedback = (project) => {
+    setSelectedProject(project);
+
+    const existingSolution = project.solutions?.[0] || {};
+    setFeedback(existingSolution.reviewNotes || "No Feedback");
+    setFeedbackModalOpen(true);
+  };
   
 
   if (loading) {
@@ -116,7 +126,7 @@ export const ProjectSubmissionForm = () => {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="bg-white dark:bg-dark rounded-lg border-2 border-gray-100 dark:border-dark shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-6"
+              className="bg-white dark:bg-dark rounded-lg border-2 border-gray-100 dark:border-dark shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-6 relative"
             >
               {/* Status Badge */}
               {project.solutions?.[0]?.reviewState && (
@@ -127,6 +137,16 @@ export const ProjectSubmissionForm = () => {
                 >
                   {project.solutions[0]?.reviewState}
                 </div>
+              )}
+
+              {/* Show Feedback Button */}
+              {project.solutions?.[0]?.reviewNotes && (
+                <button
+                  onClick={() => handleShowFeedback(project)}
+                  className="absolute top-6 right-6 py-2 px-4 text-sm text-white bg-green-500 hover:bg-green-600 rounded-lg"
+                >
+                  Show Feedback
+                </button>
               )}
 
               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{project.projectName}</h3>
@@ -229,6 +249,26 @@ export const ProjectSubmissionForm = () => {
                   className="px-4 py-2 bg-primary text-white font-normal rounded-lg"
                 >
                   {selectedProject.solutions?.length > 0 ? 'Update Link' : 'Submit Project'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Feedback Modal */}
+      {feedbackModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white dark:bg-darkBg shadow-lg rounded-lg w-96 sm:w-[600px] p-8">
+            <h3 className="text-3xl font-semibold text-center text-gray-900 dark:text-white mb-6">Feedback</h3>
+            <div className="space-y-4">
+              <p className="text-lg text-gray-800 dark:text-white">{feedback}</p>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setFeedbackModalOpen(false)}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                >
+                  Close
                 </button>
               </div>
             </div>
